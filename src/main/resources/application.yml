@@ -1,0 +1,5 @@
+constantsFiles:
+    strings: 'string_constants.yml'
+
+image:
+    path: '/images'
