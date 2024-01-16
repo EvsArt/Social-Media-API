@@ -2,11 +2,18 @@ package com.artevseev.SocialMediaAPI.service;
 
 import com.artevseev.SocialMediaAPI.entity.Image;
 import com.artevseev.SocialMediaAPI.repository.ImageRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class FileSystemImageService implements ImageService {
 
@@ -22,20 +29,9 @@ public class FileSystemImageService implements ImageService {
      * @param base64Img image in base64
      * @return saved Image object
      */
-    public Image save(String base64Img) {
-        String name = saveToSystem(base64Img);
-        return imageRepository.save(new Image(name));
-    }
-
-    /**
-     * Save images to file system and write them to repository
-     * @param base64Imgs images in base64
-     * @return list of saved Image objects
-     */
-    public List<Image> save(List<String> base64Imgs) {
-        return base64Imgs.stream()
-                .map(this::save)
-                .toList();
+    public Image save(String name, MultipartFile file) {
+        String nameInFileSystem = saveToSystem(file);
+        return imageRepository.save(new Image(name, nameInFileSystem));
     }
 
     /**
@@ -43,20 +39,22 @@ public class FileSystemImageService implements ImageService {
      * @param base64Img image in base64
      * @return name of saved image
      */
-    private String saveToSystem(String base64Img) {
-        // TODO: 15.01.2024 Realize image saving
-        return "ImageName";
-    }
+    protected String saveToSystem(MultipartFile file) {
 
-    /**
-     * Save list of images to file system and return its name
-     * @param base64Imgs list of images in base64
-     * @return list of names of saved images
-     */
-    private List<String> saveToSystem(List<String> base64Imgs) {
-        return base64Imgs.stream()
-                .map(this::saveToSystem)
-                .toList();
+        log.debug("Saving file {}", file);
+        String nameInFileSystem = UUID.randomUUID().toString();
+        log.debug("File will saved with name: {}", nameInFileSystem);
+
+        Path path = Path.of("src", "main", "resources", "images", nameInFileSystem);
+        try {
+            Files.createDirectories(path.getParent());
+            Files.createFile(path);
+            Files.write(path, file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return nameInFileSystem;
     }
 
 }

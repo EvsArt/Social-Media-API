@@ -3,3 +3,13 @@ constantsFiles:
 
 image:
     path: '/images'
+
+spring:
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: 'jdbc:postgresql:socialmediaapi'
+        username: postgres
+        password: postgres
+    jpa:
+        hibernate:
+            ddl-auto: create

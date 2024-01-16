@@ -1,25 +1,22 @@
 package com.artevseev.SocialMediaAPI.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.Singular;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
+import java.io.Serial;
 import java.util.Set;
 
 @Data
-@Entity
 @Builder
+@Entity(name = "users")
+@RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User implements UserDetails {
 
-    static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,7 +33,8 @@ public class User implements UserDetails {
 
     @NonNull
     @Singular
-    private Set<GrantedAuthority> authorities;
+    @OneToMany
+    private Set<Role> authorities;
 
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;

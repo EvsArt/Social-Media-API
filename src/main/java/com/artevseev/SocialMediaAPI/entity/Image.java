@@ -1,21 +1,24 @@
 package com.artevseev.SocialMediaAPI.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @Entity
+@NoArgsConstructor
 @RequiredArgsConstructor
+@Table(uniqueConstraints =
+        @UniqueConstraint(columnNames={"id", "saved_unique_name"}))
 public class Image implements Serializable {
 
-    private static final Long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,5 +26,8 @@ public class Image implements Serializable {
 
     @NonNull
     private String name;
+
+    @NonNull
+    private String savedUniqueName;
 
 }
