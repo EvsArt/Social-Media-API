@@ -26,7 +26,7 @@ public class FileSystemImageService implements ImageService {
 
     /**
      * Save image to file system and write it to repository
-     * @param base64Img image in base64
+     * @param file file in MultipartFile
      * @return saved Image object
      */
     public Image save(String name, MultipartFile file) {
@@ -36,13 +36,16 @@ public class FileSystemImageService implements ImageService {
 
     /**
      * Save image in base64 to file system and return its name
-     * @param base64Img image in base64
+     * @param file file in MultipartFile
      * @return name of saved image
      */
     protected String saveToSystem(MultipartFile file) {
 
         log.debug("Saving file {}", file);
         String nameInFileSystem = UUID.randomUUID().toString();
+        while(imageRepository.existBySavedUniqueName(nameInFileSystem)) {
+            nameInFileSystem = UUID.randomUUID().toString();
+        }
         log.debug("File will saved with name: {}", nameInFileSystem);
 
         Path path = Path.of("src", "main", "resources", "images", nameInFileSystem);

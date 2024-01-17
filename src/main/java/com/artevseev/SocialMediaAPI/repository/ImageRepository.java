@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ImageRepository extends CrudRepository<Image, Long> {
     List<Image> findByIdIn(List<Long> ids);
+
+    boolean existBySavedUniqueName(String savedName);
 }
